@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_helpdesk_stage_form_inherit_notify_emails" model="ir.ui.view">
+        <field name="name">helpdesk.stage.form.inherit.notify.emails</field>
+        <field name="model">helpdesk.stage</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_stage_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Place after Email Template -->
+            <xpath expr="//field[@name='team_ids']" position="after">
+                <field name="notify_emails"
+                       options="{'no_create': False}"
+                       placeholder="Add email recipients"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
