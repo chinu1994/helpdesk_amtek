@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
     'name': 'Helpdesk',
@@ -7,7 +5,6 @@
     'category': 'Services/Helpdesk',
     'sequence': 110,
     'summary': 'Track, prioritize, and solve customer tickets',
-    'website': 'https://www.odoo.com/app/helpdesk',
     'depends': [
         'base_setup',
         'mail',
@@ -80,12 +77,6 @@ Features:
         'web.assets_backend_lazy': [
             'helpdesk/static/src/views/helpdesk_ticket_graph/**',
             'helpdesk/static/src/views/helpdesk_ticket_pivot/**',
-        ],
-        'web.assets_unit_tests': [
-            'helpdesk/static/tests/**/*',
-        ],
-        'web.assets_tests': [
-            'helpdesk/static/tests/tours/**/*',
         ],
     }
 }
