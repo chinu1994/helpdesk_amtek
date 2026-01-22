@@ -1,0 +1,280 @@
+<odoo>
+    <data>
+        <record id="new_ticket_create_email_template" model="mail.template">
+            <field name="name">Helpdesk: Ticket New</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">{{ object.name }}</field>
+            <field name="email_from">{{ (object.team_id.alias_email_from or object.company_id.email_formatted or object.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+            <field name="partner_to">{{ object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else '' }}</field>
+            <field name="description">Send customers a confirmation email to notify them that their helpdesk ticket has been received and is currently being reviewed by the helpdesk team. Automatically send an email to customers when a ticket reaches a specific stage in a helpdesk team by setting this template on that stage.</field>
+            <field name="body_html" type="html"> <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;"> Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>, <p> Thank you for contacting us. Your support ticket has been successfully created and our team has started reviewing your request. </p> <p> <strong>Ticket Reference:</strong> <t t-out="object.ticket_ref or object.name"/> </p> <p> We aim to resolve your request within <strong>24 hours</strong>. If we need any additional information, our team will contact you shortly. </p> <p> You may reply to this email at any time to add more details to your request. </p> <br/> Best regards,<br/> <t t-out="object.team_id.name or 'Support'"/> Team </div>
+            </field>
+            <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="in_progress_ticket_email_template" model="mail.template">
+            <field name="name">Helpdesk: Ticket In Progress</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">{{ object.name }} - In Progress</field>
+
+            <field name="email_from">{{ (object.team_id.alias_email_from or object.company_id.email_formatted or object.user_id.email_formatted or user.email_formatted) }}</field>
+
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+
+            <field name="partner_to">{{ object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else '' }}</field>
+
+            <field name="description">Notify customers when their helpdesk ticket status changes to In Progress.</field>
+
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
+                    Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
+
+                    <p>
+                        We would like to inform you that your support ticket is now
+                        <strong>In Progress</strong> and is actively being worked on by our support team.
+                    </p>
+
+                    <p>
+                        <strong>Ticket Reference:</strong>
+                        <t t-out="object.ticket_ref or object.name"/>
+                    </p>
+
+                    <p>
+                        Our team is currently reviewing and resolving your request.
+                        If any additional information is required, we will contact you.
+                    </p>
+
+                    <p>
+                        You may reply to this email at any time to add more details or updates.
+                    </p>
+
+                    <br/>
+                    Best regards,<br/>
+                    <t t-out="object.team_id.name or 'Support'"/> Team
+                </div>
+            </field>
+
+            <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
+
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+         <record id="on_hold_ticket_email_template" model="mail.template">
+            <field name="name">Helpdesk: Ticket On Hold</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">{{ object.name }} - On Hold</field>
+
+            <field name="email_from">{{ (object.team_id.alias_email_from or object.company_id.email_formatted or object.user_id.email_formatted or user.email_formatted) }}</field>
+
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+
+            <field name="partner_to">{{ object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else '' }</field>
+
+            <field name="description">Notify customers when their helpdesk ticket is placed on hold.</field>
+
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
+                    Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
+
+                    <p>
+                        We would like to inform you that your support ticket is currently
+                        <strong>On Hold</strong>.
+                    </p>
+
+                    <p>
+                        <strong>Ticket Reference:</strong>
+                        <t t-out="object.ticket_ref or object.name"/>
+                    </p>
+
+                    <p>
+                        This usually means that we are waiting for additional information,
+                        confirmation, or an external dependency to proceed further.
+                    </p>
+
+                    <p>
+                        Once we receive the required details, your ticket will be
+                        resumed immediately and our team will continue working on it.
+                    </p>
+
+                    <p>
+                        You may reply to this email at any time to provide the required
+                        information or ask for updates.
+                    </p>
+
+                    <br/>
+                    Best regards,<br/>
+                    <t t-out="object.team_id.name or 'Support'"/> Team
+                </div>
+            </field>
+
+            <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
+
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="solved_ticket_email_template" model="mail.template">
+            <field name="name">Helpdesk: Ticket Solved</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">{{ object.name }} - Solved</field>
+
+            <field name="email_from">{{ (object.team_id.alias_email_from or object.company_id.email_formatted or object.user_id.email_formatted or user.email_formatted) }}</field>
+
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+
+            <field name="partner_to">{{ object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else '' }}</field>
+
+            <field name="description">Notify customers when their helpdesk ticket has been solved.</field>
+
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
+                    Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
+
+                    <p>
+                        We are happy to inform you that your support ticket has been
+                        <strong>Solved</strong>.
+                    </p>
+
+                    <p>
+                        <strong>Ticket Reference:</strong>
+                        <t t-out="object.ticket_ref or object.name"/>
+                    </p>
+
+                    <p>
+                        Our team has completed the resolution based on the information
+                        provided. We hope the solution meets your expectations.
+                    </p>
+
+                    <p>
+                        If you feel that the issue is not fully resolved or you need
+                        further assistance, simply reply to this email and we will
+                        be glad to help you.
+                    </p>
+
+                    <p>
+                        Thank you for your patience and cooperation.
+                    </p>
+
+                    <br/>
+                    Best regards,<br/>
+                    <t t-out="object.team_id.name or 'Support'"/> Team
+                </div>
+            </field>
+
+            <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
+
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+         <record id="doubt_ticket_email_template" model="mail.template">
+            <field name="name">Helpdesk: Ticket Doubt</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">{{ object.name }} - Clarification Required</field>
+
+            <field name="email_from">{{ (object.team_id.alias_email_from or object.company_id.email_formatted or object.user_id.email_formatted or user.email_formatted) }}</field>
+
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+
+            <field name="partner_to">{{ object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else '' }}</field>
+
+            <field name="description">Notify customers when their helpdesk ticket requires clarification or additional information.</field>
+
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
+                    Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
+
+                    <p>
+                        We are currently reviewing your support ticket and require
+                        some additional clarification to proceed further.
+                    </p>
+
+                    <p>
+                        <strong>Ticket Reference:</strong>
+                        <t t-out="object.ticket_ref or object.name"/>
+                    </p>
+
+                    <p>
+                        Please provide the requested details or clarification by
+                        replying to this email at your earliest convenience.
+                    </p>
+
+                    <p>
+                        Once we receive your response, our team will immediately
+                        continue working on your request.
+                    </p>
+
+                    <p>
+                        Thank you for your cooperation.
+                    </p>
+
+                    <br/>
+                    Best regards,<br/>
+                    <t t-out="object.team_id.name or 'Support'"/> Team
+                </div>
+            </field>
+
+            <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
+
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="cancelled_ticket_email_template" model="mail.template">
+            <field name="name">Helpdesk: Ticket Cancelled</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">{{ object.name }} - Cancelled</field>
+
+            <field name="email_from">{{ (object.team_id.alias_email_from or object.company_id.email_formatted or object.user_id.email_formatted or user.email_formatted) }}</field>
+
+            <field name="email_to">{{ ctx.get('email_to') }}</field>
+
+            <field name="partner_to">{{ object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else '' }}</field>
+
+            <field name="description">Notify customers when their helpdesk ticket has been cancelled.</field>
+
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
+                    Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
+
+                    <p>
+                        This is to inform you that your support ticket has been
+                        <strong>Cancelled</strong>.
+                    </p>
+
+                    <p>
+                        <strong>Ticket Reference:</strong>
+                        <t t-out="object.ticket_ref or object.name"/>
+                    </p>
+
+                    <p>
+                        The ticket has been cancelled as per the available information
+                        or request. No further action will be taken on this ticket.
+                    </p>
+
+                    <p>
+                        If you believe this cancellation was made in error or you still
+                        require assistance, you may create a new ticket or reply to this
+                        email for clarification.
+                    </p>
+
+                    <p>
+                        Thank you for your understanding.
+                    </p>
+
+                    <br/>
+                    Best regards,<br/>
+                    <t t-out="object.team_id.name or 'Support'"/> Team
+                </div>
+            </field>
+
+            <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
+
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+    </data>
+</odoo>
+
+
+
+

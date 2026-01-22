@@ -9,6 +9,7 @@
     'depends': ['base','helpdesk'],
     'data': [
         'views/templates.xml',
+        'views/mail_template.xml',
     ],
 }
 
