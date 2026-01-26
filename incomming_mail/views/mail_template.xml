@@ -8,13 +8,56 @@
             <field name="email_to">{{ ctx.get('email_to') }}</field>
             <field name="partner_to">{{ object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else '' }}</field>
             <field name="description">Send customers a confirmation email to notify them that their helpdesk ticket has been received and is currently being reviewed by the helpdesk team. Automatically send an email to customers when a ticket reaches a specific stage in a helpdesk team by setting this template on that stage.</field>
-            <field name="body_html" type="html"> <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;"> Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>, <p> Thank you for contacting us. Your support ticket has been successfully created and our team has started reviewing your request. </p> <p> <strong>Ticket Reference:</strong> <t t-out="object.ticket_ref or object.name"/> </p> <p> We aim to resolve your request within <strong>24 hours</strong>. If we need any additional information, our team will contact you shortly. </p> <p> You may reply to this email at any time to add more details to your request. </p> <br/> Best regards,<br/> <t t-out="object.team_id.name or 'Support'"/> Team </div>
+            <field name="body_html" type="html">
+                 <table width="100%" cellpadding="0" cellspacing="0" style="margin:0;padding:0;">
+                <tr>
+                    <td style="padding:12px 16px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <!-- LEFT -->
+                                <td style="vertical-align:middle;">
+                                    <div style="font-size:14px;color:#555;">
+                                        Your Helpdesk Ticket
+                                    </div>
+                                    <div style="font-size:16px;font-weight:600;">
+                                        <a t-att-href="object.get_portal_url()" style="color:#1a73e8;text-decoration:underline;">
+                                            <t t-out="object.name"/> (#<t t-out="object.id"/>)
+                                        </a>
+                                    </div>
+                                </td>
+
+                                <!-- RIGHT -->
+                                <td align="right" style="white-space:nowrap;vertical-align:middle;">
+                                    <img t-if="object.company_id.logo"
+                                         t-att-src="'/web/image/res.company/%s/logo' % object.company_id.id"
+                                         style="height:40px;vertical-align:middle;margin-right:8px;"/>
+                                    <span style="font-size:16px;font-weight:400;vertical-align:middle;">
+                                        <t t-out="object.company_id.name"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 16px 0;"/>
+
+                <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;"> Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>, <p> Thank you for contacting us. Your support ticket has been successfully created and our team has started reviewing your request. </p> <p> <strong>Ticket Reference:</strong> <t t-out="object.ticket_ref or object.name"/> </p> <p> We aim to resolve your request within <strong>24 hours</strong>. If we need any additional information, our team will contact you shortly. </p> <p> You may reply to this email at any time to add more details to your request. </p> <br/> Best regards,<br/> <t t-out="object.team_id.name or 'Support'"/> Team </div>
+                 <div style="text-align: center; padding: 16px 0px 16px 0px;">
+                        <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.use_website_helpdesk_form">
+                            <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;" t-att-href="'%s%s' % (object.team_id.website_id.domain or '', object.get_portal_url())" target="_blank">View Ticket</a>
+                        </t>
+                        <t t-else="">
+                            <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" t-att-href="object.get_portal_url()" target="_blank">View Ticket</a>
+                        </t>
+                </div>
             </field>
             <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
             <field name="auto_delete" eval="True"/>
         </record>
 
-        <record id="in_progress_ticket_email_template" model="mail.template">
+      <record id="in_progress_ticket_email_template" model="mail.template">
             <field name="name">Helpdesk: Ticket In Progress</field>
             <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
             <field name="subject">{{ object.name }} - In Progress</field>
@@ -28,6 +71,40 @@
             <field name="description">Notify customers when their helpdesk ticket status changes to In Progress.</field>
 
             <field name="body_html" type="html">
+                <!-- HEADER -->
+                 <table width="100%" cellpadding="0" cellspacing="0" style="margin:0;padding:0;">
+                <tr>
+                    <td style="padding:12px 16px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <!-- LEFT -->
+                                <td style="vertical-align:middle;">
+                                    <div style="font-size:14px;color:#555;">
+                                        Your Helpdesk Ticket
+                                    </div>
+                                    <div style="font-size:16px;font-weight:600;">
+                                        <a t-att-href="object.get_portal_url()" style="color:#1a73e8;text-decoration:underline;">
+                                            <t t-out="object.name"/> (#<t t-out="object.id"/>)
+                                        </a>
+                                    </div>
+                                </td>
+
+                                <!-- RIGHT -->
+                                <td align="right" style="white-space:nowrap;vertical-align:middle;">
+                                    <img t-if="object.company_id.logo"
+                                         t-att-src="'/web/image/res.company/%s/logo' % object.company_id.id"
+                                         style="height:40px;vertical-align:middle;margin-right:8px;"/>
+                                    <span style="font-size:16px;font-weight:400;vertical-align:middle;">
+                                        <t t-out="object.company_id.name"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 16px 0;"/>
                 <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
                     Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
 
@@ -40,6 +117,10 @@
                         <strong>Ticket Reference:</strong>
                         <t t-out="object.ticket_ref or object.name"/>
                     </p>
+                     <p>
+                        <strong>Assigned To:</strong>
+                        <t t-out="object.user_id.name or 'Not Assigned'"/>
+                    </p>
 
                     <p>
                         Our team is currently reviewing and resolving your request.
@@ -49,10 +130,73 @@
                     <p>
                         You may reply to this email at any time to add more details or updates.
                     </p>
-
+                    Best regards,
                     <br/>
-                    Best regards,<br/>
-                    <t t-out="object.team_id.name or 'Support'"/> Team
+                    <t t-out="object.team_id.name or 'Helpdesk'"/> Team
+
+                    <t t-if="object.team_id.allow_portal_ticket_closing">
+                        Feel free to close your ticket if our help is no longer needed.
+                        Thank you for your collaboration.
+                        <br/><br/>
+                    </t>
+
+                    <!-- Buttons (same as Ticket Received) -->
+                    <div style="text-align: center; padding: 16px 0;">
+                        <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.use_website_helpdesk_form">
+                            <a style="background-color:#875A7B; padding:8px 16px;
+                                      text-decoration:none; color:#fff;
+                                      border-radius:5px; font-size:13px;"
+                               t-att-href="'%s%s' % (object.team_id.website_id.domain or '', object.get_portal_url())"
+                               target="_blank">
+                                View Ticket
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <a style="background-color:#875A7B; padding:8px 16px;
+                                      text-decoration:none; color:#fff;
+                                      border-radius:5px; font-size:13px;"
+                               t-att-href="object.get_portal_url()"
+                               target="_blank">
+                                View Ticket
+                            </a>
+                        </t>
+
+                        <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.allow_portal_ticket_closing">
+                            <a style="background-color:#875A7B; padding:8px 16px;
+                                      text-decoration:none; color:#fff;
+                                      border-radius:5px; font-size:13px;"
+                               t-att-href="'%s/my/ticket/close/%s/%s'
+                               % (object.team_id.website_id.domain or '', object.id, object.access_token)"
+                               target="_blank">
+                                Close Ticket
+                            </a>
+                        </t>
+                        <t t-elif="object.team_id.allow_portal_ticket_closing">
+                            <a style="background-color:#875A7B; padding:8px 16px;
+                                      text-decoration:none; color:#fff;
+                                      border-radius:5px; font-size:13px;"
+                               t-att-href="'/my/ticket/close/%s/%s'
+                               % (object.id, object.access_token)"
+                               target="_blank">
+                                Close Ticket
+                            </a>
+                        </t>
+
+                        <t t-if="object.team_id.use_website_helpdesk_forum
+                                  or object.team_id.use_website_helpdesk_knowledge
+                                  or object.team_id.use_website_helpdesk_slides">
+                            <a style="background-color:#875A7B; padding:8px 16px;
+                                      text-decoration:none; color:#fff;
+                                      border-radius:5px; font-size:13px;"
+                               t-att-href="object.team_id.feature_form_url"
+                               target="_blank">
+                                Visit Help Center
+                            </a>
+                        </t>
+                        <br/><br/>
+                    </div>
+
+
                 </div>
             </field>
 
@@ -75,6 +219,41 @@
             <field name="description">Notify customers when their helpdesk ticket is placed on hold.</field>
 
             <field name="body_html" type="html">
+               <!-- HEADER -->
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin:0;padding:0;">
+                <tr>
+                    <td style="padding:12px 16px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <!-- LEFT -->
+                                <td style="vertical-align:middle;">
+                                    <div style="font-size:14px;color:#555;">
+                                        Your Helpdesk Ticket
+                                    </div>
+                                    <div style="font-size:16px;font-weight:600;">
+                                        <a t-att-href="object.get_portal_url()" style="color:#1a73e8;text-decoration:underline;">
+                                            <t t-out="object.name"/> (#<t t-out="object.id"/>)
+                                        </a>
+                                    </div>
+                                </td>
+
+                                <!-- RIGHT -->
+                                <td align="right" style="white-space:nowrap;vertical-align:middle;">
+                                    <img t-if="object.company_id.logo"
+                                         t-att-src="'/web/image/res.company/%s/logo' % object.company_id.id"
+                                         style="height:40px;vertical-align:middle;margin-right:8px;"/>
+                                    <span style="font-size:16px;font-weight:400;vertical-align:middle;">
+                                        <t t-out="object.company_id.name"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 16px 0;"/>
+
                 <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
                     Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
 
@@ -107,6 +286,14 @@
                     Best regards,<br/>
                     <t t-out="object.team_id.name or 'Support'"/> Team
                 </div>
+                 <div style="text-align: center; padding: 16px 0px 16px 0px;">
+                    <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.use_website_helpdesk_form">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;" t-att-href="'%s%s' % (object.team_id.website_id.domain or '', object.get_portal_url())" target="_blank">View Ticket</a>
+                    </t>
+                    <t t-else="">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" t-att-href="object.get_portal_url()" target="_blank">View Ticket</a>
+                    </t>
+                 </div>
             </field>
 
             <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
@@ -128,6 +315,42 @@
             <field name="description">Notify customers when their helpdesk ticket has been solved.</field>
 
             <field name="body_html" type="html">
+               <!-- HEADER -->
+                  <table width="100%" cellpadding="0" cellspacing="0" style="margin:0;padding:0;">
+                <tr>
+                    <td style="padding:12px 16px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <!-- LEFT -->
+                                <td style="vertical-align:middle;">
+                                    <div style="font-size:14px;color:#555;">
+                                        Your Helpdesk Ticket
+                                    </div>
+                                    <div style="font-size:16px;font-weight:600;">
+                                        <a t-att-href="object.get_portal_url()" style="color:#1a73e8;text-decoration:underline;">
+                                            <t t-out="object.name"/> (#<t t-out="object.id"/>)
+                                        </a>
+                                    </div>
+                                </td>
+
+                                <!-- RIGHT -->
+                                <td align="right" style="white-space:nowrap;vertical-align:middle;">
+                                    <img t-if="object.company_id.logo"
+                                         t-att-src="'/web/image/res.company/%s/logo' % object.company_id.id"
+                                         style="height:40px;vertical-align:middle;margin-right:8px;"/>
+                                    <span style="font-size:16px;font-weight:400;vertical-align:middle;">
+                                        <t t-out="object.company_id.name"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 16px 0;"/>
+
+                <hr style="border:none; border-top:1px solid #e0e0e0; margin:0 0 16px 0;"/>
                 <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
                     Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
 
@@ -160,6 +383,14 @@
                     Best regards,<br/>
                     <t t-out="object.team_id.name or 'Support'"/> Team
                 </div>
+                 <div style="text-align: center; padding: 16px 0px 16px 0px;">
+                    <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.use_website_helpdesk_form">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;" t-att-href="'%s%s' % (object.team_id.website_id.domain or '', object.get_portal_url())" target="_blank">View Ticket</a>
+                    </t>
+                    <t t-else="">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" t-att-href="object.get_portal_url()" target="_blank">View Ticket</a>
+                    </t>
+                 </div>
             </field>
 
             <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
@@ -181,6 +412,40 @@
             <field name="description">Notify customers when their helpdesk ticket requires clarification or additional information.</field>
 
             <field name="body_html" type="html">
+                   <table width="100%" cellpadding="0" cellspacing="0" style="margin:0;padding:0;">
+                <tr>
+                    <td style="padding:12px 16px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <!-- LEFT -->
+                                <td style="vertical-align:middle;">
+                                    <div style="font-size:14px;color:#555;">
+                                        Your Helpdesk Ticket
+                                    </div>
+                                    <div style="font-size:16px;font-weight:600;">
+                                        <a t-att-href="object.get_portal_url()" style="color:#1a73e8;text-decoration:underline;">
+                                            <t t-out="object.name"/> (#<t t-out="object.id"/>)
+                                        </a>
+                                    </div>
+                                </td>
+
+                                <!-- RIGHT -->
+                                <td align="right" style="white-space:nowrap;vertical-align:middle;">
+                                    <img t-if="object.company_id.logo"
+                                         t-att-src="'/web/image/res.company/%s/logo' % object.company_id.id"
+                                         style="height:40px;vertical-align:middle;margin-right:8px;"/>
+                                    <span style="font-size:16px;font-weight:400;vertical-align:middle;">
+                                        <t t-out="object.company_id.name"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 16px 0;"/>
+
                 <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
                     Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
 
@@ -212,6 +477,14 @@
                     Best regards,<br/>
                     <t t-out="object.team_id.name or 'Support'"/> Team
                 </div>
+                 <div style="text-align: center; padding: 16px 0px 16px 0px;">
+                    <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.use_website_helpdesk_form">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;" t-att-href="'%s%s' % (object.team_id.website_id.domain or '', object.get_portal_url())" target="_blank">View Ticket</a>
+                    </t>
+                    <t t-else="">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" t-att-href="object.get_portal_url()" target="_blank">View Ticket</a>
+                    </t>
+                 </div>
             </field>
 
             <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
@@ -233,6 +506,39 @@
             <field name="description">Notify customers when their helpdesk ticket has been cancelled.</field>
 
             <field name="body_html" type="html">
+                   <table width="100%" cellpadding="0" cellspacing="0" style="margin:0;padding:0;">
+                <tr>
+                    <td style="padding:12px 16px;">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <!-- LEFT -->
+                                <td style="vertical-align:middle;">
+                                    <div style="font-size:14px;color:#555;">
+                                        Your Helpdesk Ticket
+                                    </div>
+                                    <div style="font-size:16px;font-weight:600;">
+                                        <a t-att-href="object.get_portal_url()" style="color:#1a73e8;text-decoration:underline;">
+                                            <t t-out="object.name"/> (#<t t-out="object.id"/>)
+                                        </a>
+                                    </div>
+                                </td>
+
+                                <!-- RIGHT -->
+                                <td align="right" style="white-space:nowrap;vertical-align:middle;">
+                                    <img t-if="object.company_id.logo"
+                                         t-att-src="'/web/image/res.company/%s/logo' % object.company_id.id"
+                                         style="height:40px;vertical-align:middle;margin-right:8px;"/>
+                                    <span style="font-size:16px;font-weight:400;vertical-align:middle;">
+                                        <t t-out="object.company_id.name"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <hr style="border:none;border-top:1px solid #e0e0e0;margin:0 0 16px 0;"/>
                 <div style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; color: #333;">
                     Dear <t t-out="object.partner_id.name or 'Sir/Madam'"/>,
 
@@ -265,6 +571,14 @@
                     Best regards,<br/>
                     <t t-out="object.team_id.name or 'Support'"/> Team
                 </div>
+                 <div style="text-align: center; padding: 16px 0px 16px 0px;">
+                    <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.use_website_helpdesk_form">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 13px;" t-att-href="'%s%s' % (object.team_id.website_id.domain or '', object.get_portal_url())" target="_blank">View Ticket</a>
+                    </t>
+                    <t t-else="">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" t-att-href="object.get_portal_url()" target="_blank">View Ticket</a>
+                    </t>
+                 </div>
             </field>
 
             <field name="lang">{{ object.partner_id.lang or object.user_id.lang or user.lang }}</field>
