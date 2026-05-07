@@ -92,6 +92,13 @@ class HelpdeskTicket(models.Model):
             'Description',
             'Time'
         ]
+        sheet.set_column('A:A', 20)
+        sheet.set_column('B:B', 35)
+        sheet.set_column('C:C', 20)
+        sheet.set_column('D:D', 25)
+        sheet.set_column('E:E', 18)
+        sheet.set_column('F:F', 50)
+        sheet.set_column('G:G', 12)
 
         row = 0
 

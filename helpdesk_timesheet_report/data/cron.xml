@@ -11,18 +11,13 @@
         <field name="active">True</field>
     </record>
 
-      <record id="helpdesk_timesheet_report_email_to"
-            model="ir.config_parameter">
+      <record id="helpdesk_timesheet_report_email_to" model="ir.config_parameter">
 
-        <field name="key">
-            helpdesk_timesheet_report.email_to
-        </field>
+        <field name="key">helpdesk_timesheet_report.email_to</field>
 
-        <field name="value">
-            client@example.com
-        </field>
+        <field name="value">client@example.com</field>
 
-    </record>
+      </record>
         </data>
 
 </odoo>
