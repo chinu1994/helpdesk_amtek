@@ -1,0 +1,87 @@
+<odoo>
+    <record id="view_helpdesk_timesheet_report_form" model="ir.ui.view">
+        <field name="name">helpdesk.timesheet.report.form</field>
+        <field name="model">helpdesk.timesheet.report</field>
+        <field name="arch" type="xml">
+             <form string="Helpdesk Timesheet Report">
+
+            <group>
+                <field name="from_date"/>
+                <field name="to_date"/>
+            </group>
+
+            <footer>
+                <button string="Generate Report"
+                        type="object"
+                        name="action_generate_report"
+                        class="btn-primary"/>
+
+                <button string="Close"
+                        special="cancel"
+                        class="btn-secondary"/>
+            </footer>
+
+        </form>
+
+        </field>
+    </record>
+    <record id="view_helpdesk_timesheet_report_line_tree" model="ir.ui.view">
+
+        <field name="name">helpdesk.timesheet.report.line.tree</field>
+
+        <field name="model">helpdesk.timesheet.report.line</field>
+
+        <field name="arch" type="xml">
+
+            <list create="false" delete="false">
+
+                <field name="ticket_ref"/>
+                <field name="ticket_name"/>
+                <field name="stage"/>
+
+                <field name="employee"/>
+                <field name="date"/>
+
+                <field name="description"/>
+
+                <field name="time"/>
+
+            </list>
+
+        </field>
+
+    </record>
+
+
+    <!-- Timesheet Tree View -->
+    <record id="view_account_analytic_line_tree_inherit_ticket"
+            model="ir.ui.view">
+        <field name="name">account.analytic.line.tree.ticket</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="ticket_id"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="action_helpdesk_timesheet_report" model="ir.actions.act_window">
+        <field name="name">Timesheet Report</field>
+        <field name="res_model">helpdesk.timesheet.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_helpdesk_report_root" name="Helpdesk Report" parent="helpdesk.menu_helpdesk_root"/>
+
+
+    <menuitem id="menu_helpdesk_timesheet_report"
+              name="Timesheet Report"
+              parent="menu_helpdesk_report_root"
+              action="action_helpdesk_timesheet_report"/>
+
+</odoo>

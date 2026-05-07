@@ -1,0 +1,33 @@
+<odoo>
+    <record id="email_template_weekly_report" model="mail.template">
+        <field name="name">Weekly Helpdesk Report</field>
+        <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+        <field name="subject">Weekly Helpdesk Report</field>
+        <field name="email_to">client@example.com</field>
+        <field name="body_html">
+            <![CDATA[
+            <p>Hello,</p>
+            <p>Weekly Report:</p>
+            <p>Total Tickets: ${ctx.get('total_tickets')}</p>
+            <p>Total Time: ${ctx.get('total_time')} hours</p>
+
+            <table border="1">
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Ticket</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                </tr>
+                % for line in ctx.get('report_lines'):
+                <tr>
+                    <td>${line['ticket_ref']}</td>
+                    <td>${line['ticket']}</td>
+                    <td>${line['stage']}</td>
+                    <td>${line['time']}</td>
+                </tr>
+                % endfor
+            </table>
+            ]]>
+        </field>
+    </record>
+</odoo>
