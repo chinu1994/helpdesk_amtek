@@ -40,6 +40,8 @@ class HelpdeskTimesheetReport(models.TransientModel):
                 'date': ts.date,
                 'description': ts.name or '',
                 'time': ts.unit_amount,
+                'priority': dict(ts.ticket_id._fields['priority'].selection).get(ts.ticket_id.priority, ''),
+
             })
 
         # open separate tree view
@@ -87,6 +89,7 @@ class HelpdeskTicket(models.Model):
             'Ticket Ref',
             'Ticket Name',
             'Stage',
+            'Priority',
             'Employee',
             'Date',
             'Description',
@@ -95,10 +98,11 @@ class HelpdeskTicket(models.Model):
         sheet.set_column('A:A', 20)
         sheet.set_column('B:B', 35)
         sheet.set_column('C:C', 20)
-        sheet.set_column('D:D', 25)
-        sheet.set_column('E:E', 18)
-        sheet.set_column('F:F', 50)
-        sheet.set_column('G:G', 12)
+        sheet.set_column('D:D', 15)
+        sheet.set_column('E:E', 25)
+        sheet.set_column('F:F', 18)
+        sheet.set_column('G:G', 50)
+        sheet.set_column('H:H', 12)
 
         row = 0
 
@@ -112,14 +116,18 @@ class HelpdeskTicket(models.Model):
         for ts in timesheets:
             total_time += ts.unit_amount
 
+            priority = dict(
+                ts.ticket_id._fields['priority'].selection
+            ).get(ts.ticket_id.priority, '')
+
             sheet.write(row, 0, ts.ticket_id.ticket_ref or '')
             sheet.write(row, 1, ts.ticket_id.name or '')
             sheet.write(row, 2, ts.ticket_id.stage_id.name or '')
-            sheet.write(row, 3, ts.employee_id.name or '')
-            sheet.write(row, 4, str(ts.date))
-            sheet.write(row, 5, ts.name or '')
-            sheet.write(row, 6, ts.unit_amount)
-
+            sheet.write(row, 3, priority)
+            sheet.write(row, 4, ts.employee_id.name or '')
+            sheet.write(row, 5, str(ts.date))
+            sheet.write(row, 6, ts.name or '')
+            sheet.write(row, 7, ts.unit_amount)
             row += 1
 
         workbook.close()
@@ -197,3 +205,4 @@ class HelpdeskTimesheetReportLine(models.TransientModel):
     description = fields.Char()
 
     time = fields.Float()
+    priority = fields.Char()

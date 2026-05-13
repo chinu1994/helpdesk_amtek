@@ -38,6 +38,7 @@
                 <field name="ticket_ref"/>
                 <field name="ticket_name"/>
                 <field name="stage"/>
+                <field name="priority"/>
 
                 <field name="employee"/>
                 <field name="date"/>
